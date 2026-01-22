@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoCalc 2026 | Калькулятор углеродного следа</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+    <meta name="description" content="Рассчитайте ваш экологический след и получите персонализированные рекомендации по его снижению">
+    <!-- Шрифт Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Хедер -->
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/>
+                </svg>
+                <h1>EcoCalc<span class="year">2026</span></h1>
+            </div>
+            <p class="tagline">Рассчитай свой след — спаси планету</p>
+        </header>
+
+        <main>
+            <!-- Блок введения -->
+            <section class="intro">
+                <h2>Узнайте ваш экологический след</h2>
+                <p>Каждое наше действие оставляет отпечаток на планете. Этот калькулятор поможет оценить ваше влияние и покажет, как уменьшить его уже сегодня.</p>
+            </section>
+
+            <!-- Основная форма калькулятора -->
+            <section class="calculator-section">
+                <form id="ecoCalculator" class="calculator-form">
+                    <!-- Транспорт -->
+                    <div class="category">
+                        <h3 class="category-title">
+                            <span class="icon">🚗</span> Транспорт
+                        </h3>
+                        <div class="input-group">
+                            <label for="carKm">Пробег на машине в неделю (км)</label>
+                            <div class="slider-container">
+                                <input type="range" id="carKm" min="0" max="500" value="100" step="10" class="slider">
+                                <div class="slider-value">
+                                    <span id="carKmValue">100</span> км
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="publicTransport">Публичный транспорт в неделю (часов)</label>
+                            <div class="slider-container">
+                                <input type="range" id="publicTransport" min="0" max="20" value="5" step="1" class="slider">
+                                <div class="slider-value">
+                                    <span id="publicTransportValue">5</span> часов
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Питание -->
+                    <div class="category">
+                        <h3 class="category-title">
+                            <span class="icon">🍔</span> Питание
+                        </h3>
+                        
+                        <div class="input-group">
+                            <label>Потребление мяса в неделю</label>
+                            <div class="slider-container">
+                                <input type="range" id="meatConsumption" min="0" max="10" value="4" step="1" class="slider">
+                                <div class="slider-value">
+                                    <span id="meatConsumptionValue">4</span> порций
+                                </div>
+                            </div>
+                            <div class="scale-labels">
+                                <span>Веган</span>
+                                <span>Умеренно</span>
+                                <span>Часто</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Пищевые отходы</label>
+                            <div class="button-group">
+                                <button type="button" class="waste-btn active" data-value="low">Минимум</button>
+                                <button type="button" class="waste-btn" data-value="medium">Средне</button>
+                                <button type="button" class="waste-btn" data-value="high">Много</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Энергия -->
+                    <div class="category">
+                        <h3 class="category-title">
+                            <span class="icon">💡</span> Энергия
+                        </h3>
+                        
+                        <div class="input-group">
+                            <label for="electricity">Потребление электроэнергии (кВт·ч/мес)</label>
+                            <div class="slider-container">
+                                <input type="range" id="electricity" min="50" max="500" value="200" step="10" class="slider">
+                                <div class="slider-value">
+                                    <span id="electricityValue">200</span> кВт·ч
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>Используете ли вы ВИЭ?</label>
+                            <div class="switch-container">
+                                <label class="switch">
+                                    <input type="checkbox" id="renewableEnergy">
+                                    <span class="slider-switch"></span>
+                                </label>
+                                <span class="switch-label" id="renewableLabel">Нет</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Вода -->
+                    <div class="category">
+                        <h3 class="category-title">
+                            <span class="icon">💧</span> Вода
+                        </h3>
+                        
+                        <div class="input-group">
+                            <label for="showerTime">Время душа (минут в день)</label>
+                            <div class="slider-container">
+                                <input type="range" id="showerTime" min="3" max="30" value="10" step="1" class="slider">
+                                <div class="slider-value">
+                                    <span id="showerTimeValue">10</span> минут
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="bottles">Пластиковых бутылок в неделю</label>
+                            <div class="slider-container">
+                                <input type="range" id="bottles" min="0" max="20" value="5" step="1" class="slider">
+                                <div class="slider-value">
+                                    <span id="bottlesValue">5</span> шт
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Кнопки управления -->
+                    <div class="form-actions">
+                        <button type="button" id="calculateBtn" class="btn btn-primary">
+                            <span class="btn-icon">📊</span> Рассчитать след
+                        </button>
+                        <button type="button" id="resetBtn" class="btn btn-secondary">
+                            <span class="btn-icon">🔄</span> Сбросить
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Результаты -->
+            <section id="resultsSection" class="results-section hidden">
+                <h2 class="results-title">Ваш экологический след</h2>
+                
+                <!-- Общий результат -->
+                <div class="total-score">
+                    <div class="score-circle">
+                        <svg class="progress-ring" width="200" height="200">
+                            <circle class="progress-ring-bg" cx="100" cy="100" r="90" stroke-width="10"/>
+                            <circle class="progress-ring-fill" cx="100" cy="100" r="90" stroke-width="10"
+                                    stroke-dasharray="565.48" stroke-dashoffset="565.48"/>
+                        </svg>
+                        <div class="score-text">
+                            <span id="totalScore">0</span>
+                            <small>кг CO₂/мес</small>
+                        </div>
+                    </div>
+                    <div class="score-info">
+                        <h3 id="scoreCategory">Оценивается...</h3>
+                        <p id="scoreDescription">Ваш результат сравнивается со средним показателем по стране</p>
+                    </div>
+                </div>
+
+                <!-- Визуализация данных -->
+                <div class="visualization">
+                    <h3>Распределение по категориям</h3>
+                    <div class="bars-container" id="barsContainer">
+                        <!-- Будет заполнено через JS -->
+                    </div>
+                </div>
+
+                <!-- Сравнение -->
+                <div class="comparison">
+                    <h3>Сравнение</h3>
+                    <div class="comparison-grid">
+                        <div class="comparison-item">
+                            <span class="comparison-label">Ваш след</span>
+                            <div class="comparison-bar">
+                                <div class="comparison-fill" id="userBar" style="width: 50%"></div>
+                            </div>
+                            <span class="comparison-value" id="userValue">0 кг</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-label">Средний по стране</span>
+                            <div class="comparison-bar">
+                                <div class="comparison-fill average" style="width: 70%"></div>
+                            </div>
+                            <span class="comparison-value">300 кг</span>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-label">Цель 2030</span>
+                            <div class="comparison-bar">
+                                <div class="comparison-fill goal" style="width: 30%"></div>
+                            </div>
+                            <span class="comparison-value">150 кг</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Эквиваленты -->
+                <div class="equivalents">
+                    <h3>Что это значит?</h3>
+                    <div class="equivalents-grid">
+                        <div class="equivalent-card">
+                            <div class="equivalent-icon">🌳</div>
+                            <p>Для компенсации нужно <strong id="treesCount">0</strong> деревьев</p>
+                        </div>
+                        <div class="equivalent-card">
+                            <div class="equivalent-icon">🏊</div>
+                            <p>Такой же объем как <strong id="poolsCount">0</strong> плавательных бассейнов</p>
+                        </div>
+                        <div class="equivalent-card">
+                            <div class="equivalent-icon">🚗</div>
+                            <p>Как проехать <strong id="carKmEquivalent">0</strong> км на машине</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Рекомендации -->
+                <div class="recommendations">
+                    <h3>Персонализированные рекомендации</h3>
+                    <div class="recommendations-list" id="recommendationsList">
+                        <!-- Будет заполнено через JS -->
+                    </div>
+                    <div class="download-buttons">
+                        <button type="button" id="saveLocalBtn" class="btn btn-outline">
+                            <span class="btn-icon">💾</span> Сохранить в браузере
+                        </button>
+                        <button type="button" id="downloadPlanBtn" class="btn btn-primary">
+                            <span class="btn-icon">📥</span> Скачать план (TXT)
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Диаграмма для сравнения -->
+            <section class="chart-section hidden" id="chartSection">
+                <h3>Динамика улучшений</h3>
+                <div class="chart-container">
+                    <canvas id="improvementChart"></canvas>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2026 EcoCalc | Проект для демонстрации навыков веб-разработки</p>
+            <p>Данные приблизительные, рассчитаны на основе средних показателей</p>
+            <button type="button" id="themeToggle" class="theme-toggle">
+                <span class="theme-icon">🌙</span> Сменить тему
+            </button>
+        </footer>
+    </div>
+
+    <!-- Модальное окно для сохранения -->
+    <div id="saveModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modalTitle">План сохранен! 🌱</h3>
+            <p id="modalMessage">Ваш экологический след и рекомендации сохранены.</p>
+            <div class="modal-actions">
+                <button type="button" id="closeModal" class="btn btn-primary">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подключаем библиотеку Chart.js для графиков -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
