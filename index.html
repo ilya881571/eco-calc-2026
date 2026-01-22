@@ -2,44 +2,50 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>EcoCalc 2026 | Калькулятор углеродного следа</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
     <meta name="description" content="Рассчитайте ваш экологический след и получите персонализированные рекомендации по его снижению">
+    
     <!-- Шрифт Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
         <!-- Хедер -->
         <header class="header">
             <div class="logo">
-                <svg class="logo-icon" width="32" height="32" viewBox="0 0 24 24">
-                    <path fill="currentColor" d="M12,2L4.5,20.29L5.21,21L12,18L18.79,21L19.5,20.29L12,2Z"/>
-                </svg>
+                <div class="logo-icon">🌱</div>
                 <h1>EcoCalc<span class="year">2026</span></h1>
             </div>
             <p class="tagline">Рассчитай свой след — спаси планету</p>
         </header>
 
         <main>
-            <!-- Блок введения -->
+            <!-- Введение -->
             <section class="intro">
                 <h2>Узнайте ваш экологический след</h2>
                 <p>Каждое наше действие оставляет отпечаток на планете. Этот калькулятор поможет оценить ваше влияние и покажет, как уменьшить его уже сегодня.</p>
             </section>
 
-            <!-- Основная форма калькулятора -->
+            <!-- Калькулятор -->
             <section class="calculator-section">
                 <form id="ecoCalculator" class="calculator-form">
+                    
                     <!-- Транспорт -->
                     <div class="category">
                         <h3 class="category-title">
                             <span class="icon">🚗</span> Транспорт
                         </h3>
+                        
                         <div class="input-group">
                             <label for="carKm">Пробег на машине в неделю (км)</label>
                             <div class="slider-container">
@@ -51,7 +57,7 @@
                         </div>
 
                         <div class="input-group">
-                            <label for="publicTransport">Публичный транспорт в неделю (часов)</label>
+                            <label for="publicTransport">Публичный транспорт (часов/неделю)</label>
                             <div class="slider-container">
                                 <input type="range" id="publicTransport" min="0" max="20" value="5" step="1" class="slider">
                                 <div class="slider-value">
@@ -99,7 +105,7 @@
                         </h3>
                         
                         <div class="input-group">
-                            <label for="electricity">Потребление электроэнергии (кВт·ч/мес)</label>
+                            <label for="electricity">Электроэнергия (кВт·ч/мес)</label>
                             <div class="slider-container">
                                 <input type="range" id="electricity" min="50" max="500" value="200" step="10" class="slider">
                                 <div class="slider-value">
@@ -127,7 +133,7 @@
                         </h3>
                         
                         <div class="input-group">
-                            <label for="showerTime">Время душа (минут в день)</label>
+                            <label for="showerTime">Время душа (минут/день)</label>
                             <div class="slider-container">
                                 <input type="range" id="showerTime" min="3" max="30" value="10" step="1" class="slider">
                                 <div class="slider-value">
@@ -137,7 +143,7 @@
                         </div>
 
                         <div class="input-group">
-                            <label for="bottles">Пластиковых бутылок в неделю</label>
+                            <label for="bottles">Пластиковых бутылок (шт/неделю)</label>
                             <div class="slider-container">
                                 <input type="range" id="bottles" min="0" max="20" value="5" step="1" class="slider">
                                 <div class="slider-value">
@@ -147,7 +153,7 @@
                         </div>
                     </div>
 
-                    <!-- Кнопки управления -->
+                    <!-- Кнопки -->
                     <div class="form-actions">
                         <button type="button" id="calculateBtn" class="btn btn-primary">
                             <span class="btn-icon">📊</span> Рассчитать след
@@ -163,13 +169,13 @@
             <section id="resultsSection" class="results-section hidden">
                 <h2 class="results-title">Ваш экологический след</h2>
                 
-                <!-- Общий результат -->
+                <!-- Основной результат -->
                 <div class="total-score">
                     <div class="score-circle">
-                        <svg class="progress-ring" width="200" height="200">
-                            <circle class="progress-ring-bg" cx="100" cy="100" r="90" stroke-width="10"/>
-                            <circle class="progress-ring-fill" cx="100" cy="100" r="90" stroke-width="10"
-                                    stroke-dasharray="565.48" stroke-dashoffset="565.48"/>
+                        <svg class="progress-ring" width="180" height="180">
+                            <circle class="progress-ring-bg" cx="90" cy="90" r="80" stroke-width="10"/>
+                            <circle class="progress-ring-fill" cx="90" cy="90" r="80" stroke-width="10"
+                                    stroke-dasharray="502.4" stroke-dashoffset="502.4"/>
                         </svg>
                         <div class="score-text">
                             <span id="totalScore">0</span>
@@ -182,45 +188,60 @@
                     </div>
                 </div>
 
-                <!-- Визуализация данных -->
-                <div class="visualization">
-                    <h3>Распределение по категориям</h3>
-                    <div class="bars-container" id="barsContainer">
-                        <!-- Будет заполнено через JS -->
+                <!-- Детализация -->
+                <div class="breakdown">
+                    <h3>📊 Распределение по категориям</h3>
+                    <div class="breakdown-grid">
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">🚗 Транспорт</span>
+                            <span class="breakdown-value" id="transportValue">0 кг</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">🍔 Питание</span>
+                            <span class="breakdown-value" id="foodValue">0 кг</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">💡 Энергия</span>
+                            <span class="breakdown-value" id="energyValue">0 кг</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span class="breakdown-label">💧 Вода</span>
+                            <span class="breakdown-value" id="waterValue">0 кг</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Сравнение -->
                 <div class="comparison">
-                    <h3>Сравнение</h3>
-                    <div class="comparison-grid">
-                        <div class="comparison-item">
-                            <span class="comparison-label">Ваш след</span>
-                            <div class="comparison-bar">
-                                <div class="comparison-fill" id="userBar" style="width: 50%"></div>
+                    <h3>📈 Сравнение с нормами</h3>
+                    <div class="comparison-bars">
+                        <div class="comparison-bar">
+                            <div class="bar-label">Ваш след</div>
+                            <div class="bar-container">
+                                <div class="bar-fill user-bar" id="userComparisonBar"></div>
                             </div>
-                            <span class="comparison-value" id="userValue">0 кг</span>
+                            <div class="bar-value" id="userComparisonValue">0 кг</div>
                         </div>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Средний по стране</span>
-                            <div class="comparison-bar">
-                                <div class="comparison-fill average" style="width: 70%"></div>
+                        <div class="comparison-bar">
+                            <div class="bar-label">Средний по РФ</div>
+                            <div class="bar-container">
+                                <div class="bar-fill average-bar"></div>
                             </div>
-                            <span class="comparison-value">300 кг</span>
+                            <div class="bar-value">300 кг</div>
                         </div>
-                        <div class="comparison-item">
-                            <span class="comparison-label">Цель 2030</span>
-                            <div class="comparison-bar">
-                                <div class="comparison-fill goal" style="width: 30%"></div>
+                        <div class="comparison-bar">
+                            <div class="bar-label">Цель 2030</div>
+                            <div class="bar-container">
+                                <div class="bar-fill goal-bar"></div>
                             </div>
-                            <span class="comparison-value">150 кг</span>
+                            <div class="bar-value">150 кг</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Эквиваленты -->
                 <div class="equivalents">
-                    <h3>Что это значит?</h3>
+                    <h3>🌍 Что это значит?</h3>
                     <div class="equivalents-grid">
                         <div class="equivalent-card">
                             <div class="equivalent-icon">🌳</div>
@@ -228,64 +249,116 @@
                         </div>
                         <div class="equivalent-card">
                             <div class="equivalent-icon">🏊</div>
-                            <p>Такой же объем как <strong id="poolsCount">0</strong> плавательных бассейнов</p>
+                            <p>Как объем <strong id="poolsCount">0</strong> бассейнов</p>
                         </div>
                         <div class="equivalent-card">
                             <div class="equivalent-icon">🚗</div>
-                            <p>Как проехать <strong id="carKmEquivalent">0</strong> км на машине</p>
+                            <p>Как проехать <strong id="carKmEquivalent">0</strong> км на авто</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Рекомендации -->
                 <div class="recommendations">
-                    <h3>Персонализированные рекомендации</h3>
+                    <h3>🎯 Персональные рекомендации</h3>
                     <div class="recommendations-list" id="recommendationsList">
-                        <!-- Будет заполнено через JS -->
+                        <!-- Заполнится через JS -->
                     </div>
-                    <div class="download-buttons">
+                    <div class="action-buttons">
                         <button type="button" id="saveLocalBtn" class="btn btn-outline">
-                            <span class="btn-icon">💾</span> Сохранить в браузере
+                            <span class="btn-icon">💾</span> Сохранить план
                         </button>
                         <button type="button" id="downloadPlanBtn" class="btn btn-primary">
-                            <span class="btn-icon">📥</span> Скачать план (TXT)
+                            <span class="btn-icon">📥</span> Скачать PDF
                         </button>
                     </div>
                 </div>
             </section>
 
-            <!-- Диаграмма для сравнения -->
+            <!-- ГРАФИК - УПРОЩЕННАЯ ВЕРСИЯ -->
             <section class="chart-section hidden" id="chartSection">
-                <h3>Динамика улучшений</h3>
-                <div class="chart-container">
-                    <canvas id="improvementChart"></canvas>
+                <div class="section-header">
+                    <h3>📈 Динамика улучшений</h3>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-color user-legend"></span>
+                            <span>Ваш след</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color goal-legend"></span>
+                            <span>Цель 2030</span>
+                        </div>
+                    </div>
                 </div>
+                
+                <div class="chart-wrapper">
+                    <!-- Canvas для графика -->
+                    <canvas id="improvementChart" width="800" height="400"></canvas>
+                    
+                    <!-- Запасной вариант если Chart.js не работает -->
+                    <div class="fallback-chart hidden" id="fallbackChart">
+                        <div class="fallback-bars">
+                            <!-- Заполнится через JS -->
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="chart-note">* Прогноз улучшений при следовании рекомендациям</p>
             </section>
         </main>
 
+        <!-- Футер -->
         <footer class="footer">
-            <p>© 2026 EcoCalc | Проект для демонстрации навыков веб-разработки</p>
-            <p>Данные приблизительные, рассчитаны на основе средних показателей</p>
-            <button type="button" id="themeToggle" class="theme-toggle">
-                <span class="theme-icon">🌙</span> Сменить тему
-            </button>
+            <div class="footer-content">
+                <p>© 2026 EcoCalc | Проект для демонстрации навыков веб-разработки</p>
+                <p>Данные приблизительные, рассчитаны на основе средних показателей</p>
+                <button type="button" id="themeToggle" class="theme-toggle">
+                    <span class="theme-icon" id="themeIcon">🌙</span> Сменить тему
+                </button>
+            </div>
         </footer>
     </div>
 
-    <!-- Модальное окно для сохранения -->
+    <!-- Модальное окно -->
     <div id="saveModal" class="modal hidden">
         <div class="modal-content">
-            <h3 id="modalTitle">План сохранен! 🌱</h3>
-            <p id="modalMessage">Ваш экологический след и рекомендации сохранены.</p>
+            <div class="modal-icon">✅</div>
+            <h3 id="modalTitle">Успешно!</h3>
+            <p id="modalMessage">Ваш план сохранен</p>
             <div class="modal-actions">
-                <button type="button" id="closeModal" class="btn btn-primary">Закрыть</button>
+                <button type="button" id="closeModal" class="btn btn-primary">Понятно</button>
             </div>
         </div>
     </div>
 
-    <!-- Подключаем библиотеку Chart.js для графиков -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Прогресс бар -->
+    <div class="global-progress hidden">
+        <div class="progress-bar"></div>
+    </div>
+
+    <!-- Подключаем скрипты -->
     <script src="data.js"></script>
     <script src="script.js"></script>
+    
+    <!-- Инициализация -->
+    <script>
+        // Гарантируем загрузку
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌱 EcoCalc 2026 загружен');
+            
+            // Сразу проверяем график
+            const canvas = document.getElementById('improvementChart');
+            if (canvas) {
+                console.log('✅ Canvas найден, размеры:', canvas.width, 'x', canvas.height);
+            }
+            
+            // Проверяем библиотеку
+            if (typeof Chart !== 'undefined') {
+                console.log('✅ Chart.js загружен');
+            } else {
+                console.error('❌ Chart.js не загружен!');
+            }
+        });
+    </script>
 </body>
 </html>
