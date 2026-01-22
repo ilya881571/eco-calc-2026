@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Расчет экологического следа
+// Расчет экологического следа (ИСПРАВЛЕННЫЙ)
     calculateBtn.addEventListener('click', function() {
         console.log('Запуск расчета экологического следа...');
         
@@ -96,6 +97,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Создать график
         createImprovementChart(totalScore);
+        
+        // Принудительная перерисовка после небольшой задержки
+        setTimeout(() => {
+            if (window.ecoChart) {
+                const canvas = document.getElementById('improvementChart');
+                if (canvas) {
+                    canvas.style.width = '100%';
+                    canvas.style.height = '100%';
+                }
+                window.ecoChart.update();
+            }
+        }, 300);
         
         // Прокрутка к результатам
         document.getElementById('resultsSection').scrollIntoView({ 
@@ -241,15 +254,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Визуализация по категориям
         updateBarsVisualization(categories);
         
-        // Сравнение
-        const userBar = document.getElementById('userBar');
-        const userValue = document.getElementById('userValue');
-        const averagePercentage = (totalScore / 300) * 100; // 300 - средний по стране
-        
-        userBar.style.width = `${Math.min(averagePercentage, 100)}%`;
-        userBar.style.background = categoryInfo.color;
-        userValue.textContent = `${Math.round(totalScore)} кг`;
-        
         // Эквиваленты
         document.getElementById('treesCount').textContent = equivalents.trees;
         document.getElementById('poolsCount').textContent = equivalents.pools;
@@ -260,34 +264,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Функция обновления визуализации категорий
+    // Функция обновления визуализации категорий (ИСПРАВЛЕННАЯ)
     function updateBarsVisualization(categories) {
-        const barsContainer = document.getElementById('barsContainer');
-        const maxValue = Math.max(...Object.values(categories));
+        // Обновляем значения в существующих элементах (а не создаем новые)
+        document.getElementById('transportValue').textContent = Math.round(categories.transport) + ' кг';
+        document.getElementById('foodValue').textContent = Math.round(categories.food) + ' кг';
+        document.getElementById('energyValue').textContent = Math.round(categories.energy) + ' кг';
+        document.getElementById('waterValue').textContent = Math.round(categories.water) + ' кг';
         
-        barsContainer.innerHTML = '';
+        // Также обновляем полосы сравнения
+        updateComparisonBars(categories);
+    }
+    // Функция обновления полос сравнения (новая)
+    function updateComparisonBars(categories) {
+        const totalScore = CALCULATIONS.calculateTotal(categories);
         
-        Object.entries(categories).forEach(([category, value]) => {
-            const percentage = (value / maxValue) * 100;
-            const barItem = document.createElement('div');
-            barItem.className = 'bar-item';
-            
-            const categoryNames = {
-                transport: 'Транспорт',
-                food: 'Питание',
-                energy: 'Энергия',
-                water: 'Вода'
-            };
-            
-            barItem.innerHTML = `
-                <span class="bar-label">${categoryNames[category]}</span>
-                <div class="bar">
-                    <div class="bar-fill" style="width: ${percentage}%"></div>
-                </div>
-                <span class="bar-value">${Math.round(value)} кг</span>
-            `;
-            
-            barsContainer.appendChild(barItem);
-        });
+        // Обновляем пользовательскую полосу
+        const userBar = document.querySelector('.user-bar');
+        const userValue = document.getElementById('userComparisonValue');
+        
+        if (userBar && userValue) {
+            const percentage = Math.min((totalScore / 300) * 100, 100);
+            userBar.style.width = `${percentage}%`;
+            userValue.textContent = `${Math.round(totalScore)} кг`;
+        }
     }
     
     // Функция обновления рекомендаций
@@ -309,82 +309,93 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Функция создания графика улучшений
-    function createImprovementChart(currentScore) {
-        const ctx = document.getElementById('improvementChart').getContext('2d');
+    // Функция создания графика улучшений (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+        function createImprovementChart(currentScore) {
+        console.log('=== СОЗДАНИЕ ГРАФИКА ===');
+        console.log('Текущий счет:', currentScore);
         
-        // Данные для графика (симуляция улучшений за 6 месяцев)
-        const months = ['Текущий', '1 месяц', '2 месяца', '3 месяца', '4 месяца', '5 месяцев', '6 месяцев'];
-        const improvementRate = 0.85; // Улучшение на 15% в месяц
-        let scores = [currentScore];
+        const canvas = document.getElementById('improvementChart');
+        console.log('Canvas найден:', !!canvas);
         
-        for (let i = 1; i < 7; i++) {
-            scores.push(Math.max(scores[i-1] * improvementRate, ECO_DATA.goals.total));
+        if (!canvas) {
+            console.error('❌ Canvas не найден!');
+            return;
         }
         
-        // Уничтожение предыдущего графика, если он существует
+        // Очищаем canvas
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Устанавливаем размеры
+        const container = canvas.parentElement;
+        canvas.width = container.clientWidth;
+        canvas.height = 250;
+        
+        console.log('Размеры canvas:', canvas.width, 'x', canvas.height);
+        
+        // Уничтожаем старый график
         if (window.ecoChart) {
+            console.log('Уничтожаем старый график');
             window.ecoChart.destroy();
+            window.ecoChart = null;
         }
         
-        // Создание нового графика
-        window.ecoChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: months,
-                datasets: [{
-                    label: 'Ваш экологический след (кг CO₂)',
-                    data: scores.map(score => Math.round(score)),
-                    borderColor: '#2E8B57',
-                    backgroundColor: 'rgba(46, 139, 87, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4
-                }, {
-                    label: 'Цель 2030',
-                    data: Array(7).fill(ECO_DATA.goals.total),
-                    borderColor: '#4CAF50',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        labels: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text')
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card-bg'),
-                        titleColor: getComputedStyle(document.documentElement).getPropertyValue('--text'),
-                        bodyColor: getComputedStyle(document.documentElement).getPropertyValue('--text'),
-                        borderColor: getComputedStyle(document.documentElement).getPropertyValue('--border'),
-                        borderWidth: 1
-                    }
+        // Простейшие данные
+        const labels = ['Сейчас', '1 мес', '2 мес', '3 мес', '4 мес', '5 мес', '6 мес'];
+        const userData = [
+            currentScore,
+            currentScore * 0.9,
+            currentScore * 0.8,
+            currentScore * 0.7,
+            currentScore * 0.65,
+            currentScore * 0.6,
+            Math.max(currentScore * 0.55, 150)
+        ].map(num => Math.round(num));
+        
+        console.log('Данные графика:', userData);
+        
+        try {
+            window.ecoChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ваш экослед',
+                        data: userData,
+                        borderColor: '#2E8B57',
+                        backgroundColor: 'rgba(46, 139, 87, 0.1)',
+                        borderWidth: 2,
+                        fill: true
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--border')
-                        },
-                        ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-light')
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true
                         }
                     },
-                    x: {
-                        grid: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--border')
-                        },
-                        ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-light')
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0
                         }
                     }
                 }
-            }
-        });
+            });
+            
+            console.log('✅ График создан успешно!');
+            
+            // Принудительное обновление
+            setTimeout(() => {
+                window.ecoChart.update();
+                console.log('График обновлен');
+            }, 100);
+            
+        } catch (error) {
+            console.error('❌ Ошибка создания графика:', error);
+        }
     }
     
     // Функция скачивания плана как TXT файла
@@ -498,4 +509,96 @@ ${recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')}
     }
     
     console.log('Калькулятор готов к работе!');
+    
+    // ===== УЛУЧШЕННАЯ АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ =====
+    (function() {
+        // Исправляем высоту для мобильных браузеров
+        function fixMobileHeight() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            
+            // Адаптивная высота для модального окна
+            if (modal && !modal.classList.contains('hidden')) {
+                const modalContent = modal.querySelector('.modal-content');
+                if (modalContent && window.innerHeight < 500) {
+                    modalContent.style.maxHeight = '70vh';
+                }
+            }
+        }
+        
+        // Предотвращаем зум при двойном тапе на iOS
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Скрываем возможные баннеры активации Windows
+        function hideWindowsBanners() {
+            setTimeout(() => {
+                document.querySelectorAll('div').forEach(el => {
+                    const text = el.textContent || '';
+                    if (text.includes('Активизация') || 
+                        text.includes('Активация') || 
+                        text.includes('Windows') ||
+                        text.includes('активация Windows')) {
+                        el.style.display = 'none';
+                        el.style.visibility = 'hidden';
+                        el.style.height = '0';
+                        el.style.overflow = 'hidden';
+                    }
+                });
+            }, 500);
+        }
+        
+        // Адаптация слайдеров для мобильных
+        function adaptSlidersForMobile() {
+            if (window.innerWidth < 768) {
+                document.querySelectorAll('.slider-container').forEach(container => {
+                    const valueDisplay = container.querySelector('.slider-value');
+                    if (valueDisplay) {
+                        // На мобильных делаем отображение значения более заметным
+                        valueDisplay.style.position = 'static';
+                        valueDisplay.style.display = 'block';
+                        valueDisplay.style.margin = '8px auto 0';
+                        valueDisplay.style.width = 'fit-content';
+                    }
+                });
+            }
+        }
+        
+        // Пересчет графика при изменении размера окна
+        function handleResize() {
+            fixMobileHeight();
+            adaptSlidersForMobile();
+            hideWindowsBanners();
+            
+            // Перерисовываем график, если он существует
+            if (window.ecoChart) {
+                setTimeout(() => {
+                    window.ecoChart.resize();
+                }, 100);
+            }
+        }
+        
+        // Инициализация
+        fixMobileHeight();
+        adaptSlidersForMobile();
+        hideWindowsBanners();
+        
+        // Обработчики событий
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', function() {
+            setTimeout(handleResize, 100);
+        });
+        
+        // Улучшение для очень медленных устройств
+        if ('connection' in navigator && navigator.connection.saveData === true) {
+            console.log('Режим экономии данных включен, оптимизируем...');
+            // Можно добавить дополнительные оптимизации
+        }
+    })();
 });
